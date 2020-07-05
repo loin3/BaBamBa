@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,14 +41,9 @@ public class ListviewAdapter extends BaseAdapter {
 
         TextView textView = (TextView) convertView.findViewById(R.id.textView);
         final ListviewItem listviewItem = songList.get(position);
-        String text = listviewItem.getTitle() + " - " + listviewItem.getSinger();
+        String text = listviewItem.getTitle();
         textView.setText(text);
 
         return convertView;
-    }
-
-    public void addItem(String title, String singer, String url){
-        ListviewItem item = new ListviewItem(title, singer, url);
-        songList.add(item);
     }
 }

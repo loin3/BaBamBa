@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -12,11 +13,21 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView listView;
     private ListviewAdapter listviewAdapter;
+    private RequestQueue requestQueue;
 
     public static ArrayList<ListviewItem> songList;
 
@@ -25,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        songList = getSongList();
+        songList = new ArrayList<>();
+        getSongList();
 
-        listView = findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
         listviewAdapter = new ListviewAdapter(songList);
         listView.setAdapter(listviewAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,22 +92,40 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 1000 && resultCode == 1000){
             String title = data.getStringExtra("title");
             String addUrl = data.getStringExtra("link");
-            int location = addUrl.indexOf("v=");
-            if(location == -1){
-                addUrl = addUrl.substring(17);
-            }else{
-                addUrl = addUrl.substring(location+2);
-            }
 
-            songList.add(new ListviewItem(title, "가수3", addUrl));
+            songList.add(new ListviewItem(title, addUrl));
             listviewAdapter.notifyDataSetChanged();
         }
     }
 
-    public ArrayList<ListviewItem> getSongList(){
-        ArrayList<ListviewItem> arrayList = new ArrayList<>();
-        arrayList.add(new ListviewItem("제목", "가수", "86gRJTK-vgo"));
-        arrayList.add(new ListviewItem("제목2", "가수2", "ru-O5L2uxho"));
-        return arrayList;
+    public void getSongList(){
+        songList.add(new ListviewItem("제목", "86gRJTK-vgo"));
+        songList.add(new ListviewItem("제목2", "ru-O5L2uxho"));
+
+//        String url= " ";
+//        requestQueue = Volley.newRequestQueue(this);
+//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+//            @Override
+//            public void onResponse(JSONArray response) {
+//                for (int i = 0; i < response.length(); i++) {
+//                    try {
+//                        JSONObject jsonObject = response.getJSONObject(i);
+//
+//                        ListviewItem listviewItem = new ListviewItem(jsonObject.getString("title"), jsonObject.getString("url"));
+//                        songList.add(listviewItem);
+//                        listviewAdapter.notifyDataSetChanged();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        });
+//        requestQueue.add(jsonArrayRequest);
+
     }
 }
