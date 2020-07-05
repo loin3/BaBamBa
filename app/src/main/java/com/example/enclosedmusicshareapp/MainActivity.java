@@ -1,6 +1,7 @@
 package com.example.enclosedmusicshareapp;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,24 +10,15 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class MainActivity extends YouTubeBaseActivity {
-
-    final String APIKey = "AIzaSyBpNITvbs8PgrOXLXT4bw5cVvTsHtlYcqQ";
-
-    private String url;
-    private YouTubePlayerView youTubePlayerView;
-    private YouTubePlayer.OnInitializedListener listener;
+public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private ListviewAdapter listviewAdapter;
 
-    private ArrayList<ListviewItem> songList;
+    public static ArrayList<ListviewItem> songList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,55 +33,8 @@ public class MainActivity extends YouTubeBaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                url = songList.get(position).getUrl();
-
-                youTubePlayerView = findViewById(R.id.youtubeView);
-                listener = new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b) {
-                        youTubePlayer.loadVideo(url);
-
-                        youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
-                            @Override
-                            public void onLoading() {
-
-                            }
-
-                            @Override
-                            public void onLoaded(String s) {
-                                youTubePlayer.play();
-                            }
-
-                            @Override
-                            public void onAdStarted() {
-
-                            }
-
-                            @Override
-                            public void onVideoStarted() {
-
-                            }
-
-                            @Override
-                            public void onVideoEnded() {
-                                int nextPosition = getNextSong(position);
-                                String nextUrl = songList.get(nextPosition).getUrl();
-                                youTubePlayer.loadVideo(nextUrl);
-                            }
-
-                            @Override
-                            public void onError(YouTubePlayer.ErrorReason errorReason) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-                    }
-                };
-                youTubePlayerView.initialize(APIKey, listener);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.add(R.id.frameForFragment, YoutubeFragment.newInstance(position)).commit();
             }
         });
 
@@ -152,14 +97,5 @@ public class MainActivity extends YouTubeBaseActivity {
         arrayList.add(new ListviewItem("제목", "가수", "86gRJTK-vgo"));
         arrayList.add(new ListviewItem("제목2", "가수2", "ru-O5L2uxho"));
         return arrayList;
-    }
-
-    public int getNextSong(int currentPosition){
-        if(currentPosition == songList.size() - 1){
-            return 0;
-        }
-        else{
-            return currentPosition+1;
-        }
     }
 }
