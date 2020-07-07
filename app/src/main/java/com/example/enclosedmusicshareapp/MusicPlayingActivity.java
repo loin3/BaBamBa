@@ -1,6 +1,7 @@
 package com.example.enclosedmusicshareapp;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,8 @@ public class MusicPlayingActivity extends AppCompatActivity {
         songList = new ArrayList<>();
         getSongList();
 
+        setDefaultTextOnPlayer();
+
         ListView listView = findViewById(R.id.listView);
         listviewAdapter = new ListviewAdapter(songList);
         listView.setAdapter(listviewAdapter);
@@ -37,7 +40,7 @@ public class MusicPlayingActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.frameForFragment, YoutubeFragment.newInstance(position)).commit();
+                transaction.replace(R.id.frameForFragment, YoutubeFragment.newInstance(position)).commit();
             }
         });
 
@@ -118,5 +121,10 @@ public class MusicPlayingActivity extends AppCompatActivity {
 //        });
 //        requestQueue.add(jsonArrayRequest);
 
+    }
+
+    private void setDefaultTextOnPlayer(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.add(R.id.frameForFragment, BlankYoutubeViewFragment.newInstance()).commit();
     }
 }

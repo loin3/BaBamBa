@@ -33,7 +33,6 @@ public class YoutubeFragment extends YouTubePlayerFragment {
                 final ListviewItem song = songList.get(getArguments().getInt("position"));
                 youTubePlayer.loadVideo(song.getUrl());
 
-
                 youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                     @Override
                     public void onLoading() {
