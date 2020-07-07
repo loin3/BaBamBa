@@ -7,7 +7,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
-import static com.example.enclosedmusicshareapp.MainActivity.songList;
+import static com.example.enclosedmusicshareapp.MusicPlayingActivity.songList;
 
 
 public class YoutubeFragment extends YouTubePlayerFragment {

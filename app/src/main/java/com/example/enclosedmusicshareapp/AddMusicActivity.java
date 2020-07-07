@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,8 +72,8 @@ public class AddMusicActivity extends AppCompatActivity {
     }
 
     public boolean checkDuplicatedSong(String url){
-        for(int i = 0; i < MainActivity.songList.size(); i++){
-            if(MainActivity.songList.get(i).getUrl().equals(url)){
+        for(int i = 0; i < MusicPlayingActivity.songList.size(); i++){
+            if(MusicPlayingActivity.songList.get(i).getUrl().equals(url)){
                 return true;
             }
         }
