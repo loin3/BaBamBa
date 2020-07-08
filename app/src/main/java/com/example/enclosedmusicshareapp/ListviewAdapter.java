@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,10 +40,18 @@ public class ListviewAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.listview_item, parent, false);
         }
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textView);
         final ListviewItem listviewItem = songList.get(position);
+
+        TextView textView = (TextView) convertView.findViewById(R.id.textView);
         String text = listviewItem.getTitle();
         textView.setText(text);
+
+        ImageView imageView = convertView.findViewById(R.id.playingImageView);
+        if(listviewItem.getPlaying() == true){
+            imageView.setVisibility(View.VISIBLE);
+        }else{
+            imageView.setVisibility(View.INVISIBLE);
+        }
 
         return convertView;
     }

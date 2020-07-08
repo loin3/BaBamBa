@@ -12,6 +12,11 @@ import static com.example.enclosedmusicshareapp.MusicPlayingActivity.songList;
 
 public class YoutubeFragment extends YouTubePlayerFragment {
 
+    private ListviewItem currentSong;
+    private ListviewAdapter listviewAdapter;
+
+
+
     public YoutubeFragment() {
         // Required empty public constructor
     }
@@ -30,8 +35,10 @@ public class YoutubeFragment extends YouTubePlayerFragment {
         initialize("AIzaSyBpNITvbs8PgrOXLXT4bw5cVvTsHtlYcqQ", new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b) {
-                final ListviewItem song = songList.get(getArguments().getInt("position"));
-                youTubePlayer.loadVideo(song.getUrl());
+                currentSong = songList.get(getArguments().getInt("position"));
+                currentSong.setPlaying(true);
+                youTubePlayer.loadVideo(currentSong.getUrl());
+                listviewAdapter.notifyDataSetChanged();
 
                 youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                     @Override
@@ -56,7 +63,12 @@ public class YoutubeFragment extends YouTubePlayerFragment {
 
                     @Override
                     public void onVideoEnded() {
-                        youTubePlayer.loadVideo(getNextSong(getArguments().getInt("position")).getUrl());
+                        currentSong.setPlaying(false);
+                        ListviewItem nextSong = getNextSong(getArguments().getInt("position"));
+                        youTubePlayer.loadVideo((nextSong).getUrl());
+                        nextSong.setPlaying(true);
+                        currentSong = nextSong;
+                        listviewAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -71,6 +83,17 @@ public class YoutubeFragment extends YouTubePlayerFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        currentSong.setPlaying(false);
+        listviewAdapter.notifyDataSetChanged();
+    }
+
+    public void setAdapter(ListviewAdapter listviewAdapter){
+        this.listviewAdapter = listviewAdapter;
     }
 
     public ListviewItem getNextSong(int currentPosition){
