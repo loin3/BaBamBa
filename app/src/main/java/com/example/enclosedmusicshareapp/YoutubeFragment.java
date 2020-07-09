@@ -15,8 +15,6 @@ public class YoutubeFragment extends YouTubePlayerFragment {
     private ListviewItem currentSong;
     private ListviewAdapter listviewAdapter;
 
-
-
     public YoutubeFragment() {
         // Required empty public constructor
     }

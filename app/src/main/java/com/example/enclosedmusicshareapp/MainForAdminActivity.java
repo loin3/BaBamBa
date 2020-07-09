@@ -7,15 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainForAdminActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_for_admin);
 
-        Button goToPlayer = (Button) findViewById(R.id.goToPlayer);
-        Button logout = (Button) findViewById(R.id.logout);
+        Button goToPlayer = (Button) findViewById(R.id.goToPlayer2);
+        Button logout = (Button) findViewById(R.id.logout2);
 
         goToPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +31,5 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 }
