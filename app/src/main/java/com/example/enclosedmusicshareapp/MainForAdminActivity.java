@@ -1,13 +1,18 @@
 package com.example.enclosedmusicshareapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainForAdminActivity extends AppCompatActivity {
+
+    long keyPressTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +36,24 @@ public class MainForAdminActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast toast = Toast.makeText(getApplicationContext(), "'뒤로'버튼을 한번 더 누르면 종료", Toast.LENGTH_SHORT);
+        if(System.currentTimeMillis() > keyPressTime + 2000){
+            keyPressTime = System.currentTimeMillis();
+            toast.show();
+        }
+        else{
+            toast.cancel();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                finishAffinity();
+            }else{
+                ActivityCompat.finishAffinity(this);
+            }
+            System.runFinalization();
+            System.exit(0);
+        }
     }
 }

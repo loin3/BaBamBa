@@ -7,17 +7,32 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class AddMusicActivity extends AppCompatActivity {
 
     String link;
     String title;
+    int statusCode;
+    final int ADD_MUSIC_SUCCESS = 1;
+    final int DUPLICATED_MUSIC = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_music);
+
+        final ServerCommunicator serverCommunicator = new ServerCommunicator(this);
 
         final EditText editText = findViewById(R.id.editText);
         Button okayButton = findViewById(R.id.button2);
@@ -29,26 +44,35 @@ public class AddMusicActivity extends AppCompatActivity {
                 link = editText.getText().toString();
 
                 String normalizedLink =  normalizeLine(link);
-                if(checkDuplicatedSong(normalizedLink) == true){
-                    Toast.makeText(getApplicationContext(), "이미 존재하는 노래임", Toast.LENGTH_SHORT).show();
-                }else{
-                    new Thread(){
-                        public void run(){
-                            HtmlController htmlController = new HtmlController();
-                            title = htmlController.getTitleFromUrl(link);
-                        }
-                    }.start();
-
-                    while(title == null){
+                Thread thread = new Thread(){
+                    public void run(){
+                        HtmlController htmlController = new HtmlController();
+                        title = htmlController.getTitleFromUrl(link);
                     }
-
-                    Intent intent = new Intent();
-                    intent.putExtra("link", normalizedLink);
-                    intent.putExtra("title", title);
-                    setResult(1000, intent);
-                    finish();
+                };
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
+
+                serverCommunicator.addSongToServer(link, title);
+                while(true){
+                    if(statusCode == ADD_MUSIC_SUCCESS){
+                        break;
+                    }else if(statusCode == DUPLICATED_MUSIC){
+                        break;
+                    }
+                }
+
+                Intent intent = new Intent();
+                intent.putExtra("link", normalizedLink);
+                intent.putExtra("title", title);
+                setResult(serverCommunicator.statusCode, intent);
+                finish();
+                }
+
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,12 +95,4 @@ public class AddMusicActivity extends AppCompatActivity {
         return normalizedLink;
     }
 
-    public boolean checkDuplicatedSong(String url){
-        for(int i = 0; i < MusicPlayingActivity.songList.size(); i++){
-            if(MusicPlayingActivity.songList.get(i).getUrl().equals(url)){
-                return true;
-            }
-        }
-        return false;
-    }
 }

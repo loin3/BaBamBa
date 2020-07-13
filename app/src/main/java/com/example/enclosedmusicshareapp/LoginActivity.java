@@ -50,8 +50,29 @@ public class LoginActivity extends AppCompatActivity {
         String id = editTextForID.getText().toString();
         String password = editTextForPassword.getText().toString();
 
+        if(checkProperLengthID(id) == false || checkProperLengthPassword(password) == false){
+            return IMPROPER_ACCOUNT;
+        }
+
         //id, password를 가지고 해당 유저가 맞는지 확인해야됨
         //일반 유저일 경우 0, 관리자일 경우 1, 틀리면 -1 반환
-        return 1;
+        return 0;
     }
+
+    private boolean checkProperLengthID(String id){
+        if(id.length() >= 3 && id.length() < 25){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean checkProperLengthPassword(String password){
+        if(password.length() >= 8 && password.length() < 25){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }

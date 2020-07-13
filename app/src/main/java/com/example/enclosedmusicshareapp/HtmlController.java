@@ -23,6 +23,7 @@ public class HtmlController {
             e.printStackTrace();
         }
         String title = document.select("meta[name=title]").first().attr("content");
+
         return title;
     }
 }
