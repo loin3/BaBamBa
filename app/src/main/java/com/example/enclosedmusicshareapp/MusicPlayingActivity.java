@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class MusicPlayingActivity extends AppCompatActivity {
     private ListviewAdapter listviewAdapter;
+    private ProgressBarDisplayer progressBarDisplayer;
 
     public static ArrayList<ListviewItem> songList;
 
@@ -29,6 +30,12 @@ public class MusicPlayingActivity extends AppCompatActivity {
         songList = new ArrayList<>();
         final ServerCommunicator serverCommunicator = new ServerCommunicator(this);
         serverCommunicator.getSongListFromServer();
+
+        progressBarDisplayer = new ProgressBarDisplayer(this);
+//        progressBarDisplayer.showDialog();
+//        if(serverCommunicator.statusCode == 200 || serverCommunicator.statusCode == 1000){
+//            progressBarDisplayer.hideDialog();
+//        }
 
         setDefaultTextOnPlayer();
 

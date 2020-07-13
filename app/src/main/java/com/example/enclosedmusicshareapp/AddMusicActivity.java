@@ -7,25 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.android.volley.NetworkResponse;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.widget.Toast;
 
 public class AddMusicActivity extends AppCompatActivity {
 
     String link;
     String title;
-    int statusCode;
-    final int ADD_MUSIC_SUCCESS = 1;
-    final int DUPLICATED_MUSIC = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,21 +45,22 @@ public class AddMusicActivity extends AppCompatActivity {
                 }
 
                 serverCommunicator.addSongToServer(link, title);
-                while(true){
-                    if(statusCode == ADD_MUSIC_SUCCESS){
-                        break;
-                    }else if(statusCode == DUPLICATED_MUSIC){
-                        break;
-                    }
+                ProgressBarDisplayer progressBarDisplayer = new ProgressBarDisplayer(getApplicationContext());
+                progressBarDisplayer.showDialog();
+                if(serverCommunicator.statusCode == 200){
+                    progressBarDisplayer.hideDialog();
+
+                    Intent intent = new Intent();
+                    intent.putExtra("link", normalizedLink);
+                    intent.putExtra("title", title);
+                    setResult(serverCommunicator.statusCode, intent);
+                    finish();
+                }else if(serverCommunicator.statusCode == 1000){
+                    progressBarDisplayer.hideDialog();
+                    Toast.makeText(getApplicationContext(), "이미 있는 노래임", Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent = new Intent();
-                intent.putExtra("link", normalizedLink);
-                intent.putExtra("title", title);
-                setResult(serverCommunicator.statusCode, intent);
-                finish();
-                }
-
+            }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
