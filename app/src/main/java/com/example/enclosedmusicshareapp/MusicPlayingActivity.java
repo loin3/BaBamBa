@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 
 public class MusicPlayingActivity extends AppCompatActivity {
     private ListviewAdapter listviewAdapter;
-    private ProgressBarDisplayer progressBarDisplayer;
 
     public static ArrayList<ListviewItem> songList;
 
@@ -28,14 +26,8 @@ public class MusicPlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_music_playing);
 
         songList = new ArrayList<>();
-        final ServerCommunicator serverCommunicator = new ServerCommunicator(this);
+        final ServerCommunicator serverCommunicator = new ServerCommunicator(MusicPlayingActivity.this);
         serverCommunicator.getSongListFromServer();
-
-        progressBarDisplayer = new ProgressBarDisplayer(this);
-//        progressBarDisplayer.showDialog();
-//        if(serverCommunicator.statusCode == 200 || serverCommunicator.statusCode == 1000){
-//            progressBarDisplayer.hideDialog();
-//        }
 
         setDefaultTextOnPlayer();
 
@@ -69,10 +61,7 @@ public class MusicPlayingActivity extends AppCompatActivity {
                 builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String url = songList.get(position).getUrl();
-                        String title = songList.get(position).getTitle();
-
-                        serverCommunicator.deleteSongFromServer(url, title);
+                        serverCommunicator.deleteSongFromServer(position);
 
                         songList.remove(position);
                         listviewAdapter.notifyDataSetChanged();
@@ -109,10 +98,6 @@ public class MusicPlayingActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1000 && resultCode == 200){
-            String title = data.getStringExtra("title");
-            String addUrl = data.getStringExtra("link");
-
-            songList.add(new ListviewItem(title, addUrl));
             listviewAdapter.notifyDataSetChanged();
         }
     }

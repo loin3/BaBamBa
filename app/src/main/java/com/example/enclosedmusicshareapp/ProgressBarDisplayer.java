@@ -18,7 +18,7 @@ public class ProgressBarDisplayer {
     }
 
     public void hideDialog(){
-        progressDialog.hide();
+        progressDialog.dismiss();
     }
 
 }

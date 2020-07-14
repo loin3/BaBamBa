@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class AddMusicActivity extends AppCompatActivity {
 
@@ -45,21 +44,12 @@ public class AddMusicActivity extends AppCompatActivity {
                 }
 
                 serverCommunicator.addSongToServer(link, title);
-                ProgressBarDisplayer progressBarDisplayer = new ProgressBarDisplayer(getApplicationContext());
-                progressBarDisplayer.showDialog();
-                if(serverCommunicator.statusCode == 200){
-                    progressBarDisplayer.hideDialog();
 
+                if(serverCommunicator.statusCode == 201){
                     Intent intent = new Intent();
-                    intent.putExtra("link", normalizedLink);
-                    intent.putExtra("title", title);
                     setResult(serverCommunicator.statusCode, intent);
                     finish();
-                }else if(serverCommunicator.statusCode == 1000){
-                    progressBarDisplayer.hideDialog();
-                    Toast.makeText(getApplicationContext(), "이미 있는 노래임", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {

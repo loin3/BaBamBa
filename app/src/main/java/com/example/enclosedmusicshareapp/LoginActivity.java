@@ -11,10 +11,6 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
-    final int USER = 0;
-    final int ADMIN = 1;
-    final int IMPROPER_ACCOUNT = -1;
-
     private EditText editTextForID;
     private EditText editTextForPassword;
     private Button logInButton;
@@ -33,30 +29,41 @@ public class LoginActivity extends AppCompatActivity {
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkAuthorizedUser() == USER){
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }else if(checkAuthorizedUser() == ADMIN){
-                    Intent intent = new Intent(getApplicationContext(), MainForAdminActivity.class);
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(), "아이디나 비번이 틀린듯", Toast.LENGTH_SHORT).show();
-                }
+
+                String id = editTextForID.getText().toString();
+                String password = editTextForPassword.getText().toString();
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+
+//                ServerCommunicator serverCommunicator = new ServerCommunicator(LoginActivity.this);
+//                serverCommunicator.signIn(id, password);
+//
+//                if(serverCommunicator.statusCode == 200){
+//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                    startActivity(intent);
+//                }else if(checkIfUserWriteProperly(id, password) == -1 || serverCommunicator.statusCode == 1000){
+//                    Toast.makeText(getApplicationContext(), "아이디나 비번이 틀린듯", Toast.LENGTH_SHORT).show();
+//                }
+
+            }
+        });
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
             }
         });
     }
 
-    public int checkAuthorizedUser(){
-        String id = editTextForID.getText().toString();
-        String password = editTextForPassword.getText().toString();
-
+    public int checkIfUserWriteProperly(String id, String password){
         if(checkProperLengthID(id) == false || checkProperLengthPassword(password) == false){
-            return IMPROPER_ACCOUNT;
+            return -1;
+        }else{
+            return 0;
         }
-
-        //id, password를 가지고 해당 유저가 맞는지 확인해야됨
-        //일반 유저일 경우 0, 관리자일 경우 1, 틀리면 -1 반환
-        return 0;
     }
 
     private boolean checkProperLengthID(String id){
