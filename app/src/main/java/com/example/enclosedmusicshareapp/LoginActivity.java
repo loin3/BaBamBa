@@ -2,12 +2,13 @@ package com.example.enclosedmusicshareapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -15,11 +16,21 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextForPassword;
     private Button logInButton;
     private Button signInButton;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        sharedPreferences = getSharedPreferences("IdCache", Context.MODE_PRIVATE);
+        String cachedID = sharedPreferences.getString("id", "null");
+        String cachedPassword = sharedPreferences.getString("password", "null");
+        long cachedTime = sharedPreferences.getLong("data", 0);
+        if(cachedID != null && cachedPassword != null & System.currentTimeMillis() - cachedTime < 15552000){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
 
         editTextForID = findViewById(R.id.editTextForID);
         editTextForPassword = findViewById(R.id.editTextForPassword);
@@ -36,16 +47,10 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
 
-//                ServerCommunicator serverCommunicator = new ServerCommunicator(LoginActivity.this);
-//                serverCommunicator.signIn(id, password);
-//
-//                if(serverCommunicator.statusCode == 200){
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    startActivity(intent);
-//                }else if(checkIfUserWriteProperly(id, password) == -1 || serverCommunicator.statusCode == 1000){
-//                    Toast.makeText(getApplicationContext(), "아이디나 비번이 틀린듯", Toast.LENGTH_SHORT).show();
+//                if(checkProperLengthID(id) == true){
+//                    ServerCommunicator serverCommunicator = new ServerCommunicator(LoginActivity.this);
+//                    serverCommunicator.signIn(id, password);
 //                }
-
             }
         });
 

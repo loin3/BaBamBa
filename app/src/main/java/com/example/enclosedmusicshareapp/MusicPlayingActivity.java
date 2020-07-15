@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class MusicPlayingActivity extends AppCompatActivity {
-    private ListviewAdapter listviewAdapter;
+    public ListviewAdapter listviewAdapter;
 
     public static ArrayList<ListviewItem> songList;
 
@@ -26,18 +26,19 @@ public class MusicPlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_music_playing);
 
         songList = new ArrayList<>();
-        final ServerCommunicator serverCommunicator = new ServerCommunicator(MusicPlayingActivity.this);
-        serverCommunicator.getSongListFromServer();
-
-        setDefaultTextOnPlayer();
 
         ListView listView = findViewById(R.id.listView);
         listviewAdapter = new ListviewAdapter(songList);
         listView.setAdapter(listviewAdapter);
+
+        final ServerCommunicator serverCommunicator = new ServerCommunicator(MusicPlayingActivity.this);
+        serverCommunicator.getSongListFromServer(listviewAdapter);
+
+        setDefaultTextOnPlayer();
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-
                 YoutubeFragment f = YoutubeFragment.newInstance(position);
                 f.setAdapter(listviewAdapter);
 
@@ -61,10 +62,7 @@ public class MusicPlayingActivity extends AppCompatActivity {
                 builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        serverCommunicator.deleteSongFromServer(position);
-
-                        songList.remove(position);
-                        listviewAdapter.notifyDataSetChanged();
+                        serverCommunicator.deleteSongFromServer(position, listviewAdapter);
                     }
                 });
                 builder.create().show();
@@ -86,8 +84,7 @@ public class MusicPlayingActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                serverCommunicator.getSongListFromServer();
-                listviewAdapter.notifyDataSetChanged();
+                serverCommunicator.getSongListFromServer(listviewAdapter);
             }
         });
 
@@ -97,7 +94,7 @@ public class MusicPlayingActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1000 && resultCode == 200){
+        if(requestCode == 1000 && resultCode == 201){
             listviewAdapter.notifyDataSetChanged();
         }
     }
@@ -106,4 +103,5 @@ public class MusicPlayingActivity extends AppCompatActivity {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.add(R.id.frameForFragment, BlankYoutubeViewFragment.newInstance()).commit();
     }
+
 }

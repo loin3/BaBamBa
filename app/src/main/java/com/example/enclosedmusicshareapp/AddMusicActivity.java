@@ -4,14 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class AddMusicActivity extends AppCompatActivity {
 
-    String link;
-    String title;
+    private String link;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,7 @@ public class AddMusicActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                serverCommunicator.addSongToServer(link, title);
-
-                if(serverCommunicator.statusCode == 201){
-                    Intent intent = new Intent();
-                    setResult(serverCommunicator.statusCode, intent);
-                    finish();
-                }
+                serverCommunicator.addSongToServer(normalizedLink, title);
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +66,13 @@ public class AddMusicActivity extends AppCompatActivity {
         }
 
         return normalizedLink;
+    }
+
+    public void setResultAndFinish(int statusCode){
+        Log.d("asdf3","tlqkf");
+        Intent intent = new Intent();
+        setResult(statusCode, intent);
+        finish();
     }
 
 }

@@ -13,9 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SignUpActivity extends AppCompatActivity {
-    private boolean idAvailable = false;
+    public int idAvailable = -1;
     private EditText idEditText, passwordEditText;
     private TextView idTextView, passwordTextView;
+    public TextView checkIdTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,8 @@ public class SignUpActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         idTextView = findViewById(R.id.idTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
+
+        checkIdTextView = findViewById(R.id.checkIdTextView);
 
         idEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -73,7 +76,10 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(checkProperLengthID(idEditText.getText().toString()) == true){
-                    //해당 아이디가 사용가능한지 서버에 체크
+                    ServerCommunicator serverCommunicator = new ServerCommunicator(SignUpActivity.this);
+                    serverCommunicator.checkDuplicateUserToServer(idEditText.getText().toString());
+                }else{
+                    Toast.makeText(getApplicationContext(), "아이디를 확인해라", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -82,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(idAvailable == false){
+                if(idAvailable != 1){
                     Toast.makeText(getApplicationContext(), "아이디를 확인해라", Toast.LENGTH_SHORT).show();
                     idEditText.requestFocus();
                 }else if(checkProperLengthPassword(passwordEditText.getText().toString()) == false){
@@ -91,13 +97,6 @@ public class SignUpActivity extends AppCompatActivity {
                 }else{
                     ServerCommunicator serverCommunicator = new ServerCommunicator(SignUpActivity.this);
                     serverCommunicator.signUp(idEditText.getText().toString(), passwordEditText.getText().toString());
-
-                    if(serverCommunicator.statusCode == 200){
-                        Toast.makeText(getApplicationContext(), "회원가입성공", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "회원가입실패", Toast.LENGTH_SHORT).show();
-                    }
                 }
             }
         });
