@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 public class ListviewItem {
     private String title;
     private String url;
-    private boolean isPlaying;
+    private int isPlaying;
 
     public ListviewItem(String title, String url){
         setText(title, url);
@@ -14,7 +14,7 @@ public class ListviewItem {
     public void setText(String title, String url){
         this.title = title;
         this.url = url;
-        this.isPlaying = false;
+        this.isPlaying = -1;
     }
 
     public String getTitle(){
@@ -25,13 +25,13 @@ public class ListviewItem {
         return this.url;
     }
 
-    public void setPlaying(boolean isPlaying){this.isPlaying = isPlaying;}
+    public void setPlaying(int isPlaying){this.isPlaying = isPlaying;}
 
-    public boolean getPlaying(){return this.isPlaying;}
+    public int getPlaying(){return this.isPlaying;}
 
     @NonNull
     @Override
     public String toString() {
-        return "title : " + title + " url : " + url;
+        return "title : " + title + " url : " + url + " playing : " + isPlaying;
     }
 }

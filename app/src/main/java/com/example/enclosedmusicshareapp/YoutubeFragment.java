@@ -32,7 +32,7 @@ public class YoutubeFragment extends YouTubePlayerFragment {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b) {
                 currentSong = songList.get(getArguments().getInt("position"));
-                currentSong.setPlaying(true);
+                currentSong.setPlaying(1);
                 youTubePlayer.loadVideo(currentSong.getUrl());
                 listviewAdapter.notifyDataSetChanged();
 
@@ -59,16 +59,45 @@ public class YoutubeFragment extends YouTubePlayerFragment {
 
                     @Override
                     public void onVideoEnded() {
-                        currentSong.setPlaying(false);
+                        currentSong.setPlaying(-1);
                         ListviewItem nextSong = getNextSong(getArguments().getInt("position"));
                         youTubePlayer.loadVideo((nextSong).getUrl());
-                        nextSong.setPlaying(true);
+                        nextSong.setPlaying(1);
                         currentSong = nextSong;
                         listviewAdapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onError(YouTubePlayer.ErrorReason errorReason) {
+
+                    }
+                });
+                youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                    @Override
+                    public void onPlaying() {
+                        currentSong.setPlaying(1);
+                        listviewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onPaused() {
+                        currentSong.setPlaying(0);
+                        listviewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onStopped() {
+                        currentSong.setPlaying(0);
+                        listviewAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onBuffering(boolean b) {
+
+                    }
+
+                    @Override
+                    public void onSeekTo(int i) {
 
                     }
                 });
@@ -84,7 +113,7 @@ public class YoutubeFragment extends YouTubePlayerFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        currentSong.setPlaying(false);
+        currentSong.setPlaying(-1);
         listviewAdapter.notifyDataSetChanged();
     }
 

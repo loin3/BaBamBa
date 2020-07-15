@@ -47,8 +47,13 @@ public class ListviewAdapter extends BaseAdapter {
         textView.setText(text);
 
         ImageView imageView = convertView.findViewById(R.id.playingImageView);
-        if(listviewItem.getPlaying() == true){
+        if(listviewItem.getPlaying() != -1){
             imageView.setVisibility(View.VISIBLE);
+            if(listviewItem.getPlaying() == 0){
+                imageView.setImageResource(R.drawable.ic_media_play);
+            }else if(listviewItem.getPlaying() == 1){
+                imageView.setImageResource(R.drawable.ic_media_pause);
+            }
         }else{
             imageView.setVisibility(View.INVISIBLE);
         }
