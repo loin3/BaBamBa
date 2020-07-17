@@ -8,23 +8,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class ListviewAdapter extends BaseAdapter {
-    private ArrayList<ListviewItem> songList;
+    private SongList songList;
 
-    public ListviewAdapter(ArrayList<ListviewItem> data){
-        songList = data;
+    public ListviewAdapter(){
+        songList = SongList.getInstance();
     }
 
     @Override
     public int getCount() {
-        return songList.size();
+        return songList.getListSize();
     }
 
     @Override
     public Object getItem(int position) {
-        return songList.get(position);
+        return songList.getSongFromList(position);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ListviewAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.listview_item, parent, false);
         }
 
-        final ListviewItem listviewItem = songList.get(position);
+        final ListviewItem listviewItem = songList.getSongFromList(position);
 
         TextView textView = (TextView) convertView.findViewById(R.id.textView);
         String text = listviewItem.getTitle();

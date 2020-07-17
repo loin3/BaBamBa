@@ -23,11 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sharedPreferences = getSharedPreferences("IdCache", Context.MODE_PRIVATE);
-        String cachedID = sharedPreferences.getString("id", "null");
-        String cachedPassword = sharedPreferences.getString("password", "null");
-        long cachedTime = sharedPreferences.getLong("data", 0);
-        if(cachedID != null && cachedPassword != null & System.currentTimeMillis() - cachedTime < 15552000){
+        if(checkValidCaching() == true){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
@@ -81,6 +77,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkProperLengthPassword(String password){
         if(password.length() >= 8 && password.length() < 25){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean checkValidCaching(){
+        sharedPreferences = getSharedPreferences("IdCache", Context.MODE_PRIVATE);
+        String cachedID = sharedPreferences.getString("id", "null");
+        String cachedPassword = sharedPreferences.getString("password", "null");
+        long cachedTime = sharedPreferences.getLong("data", 0);
+
+        if(cachedID != null && cachedPassword != null & System.currentTimeMillis() - cachedTime < 15552000){
             return true;
         }else{
             return false;

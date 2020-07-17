@@ -13,25 +13,23 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 public class MusicPlayingActivity extends AppCompatActivity {
-    public ListviewAdapter listviewAdapter;
-
-    public static ArrayList<ListviewItem> songList;
+    private ListviewAdapter listviewAdapter;
+    private ServerCommunicator serverCommunicator;
+    private SongList songList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_playing);
 
-        songList = new ArrayList<>();
+        serverCommunicator = new ServerCommunicator(MusicPlayingActivity.this);
+        songList = SongList.getInstance();
 
         ListView listView = findViewById(R.id.listView);
-        listviewAdapter = new ListviewAdapter(songList);
+        listviewAdapter = new ListviewAdapter();
         listView.setAdapter(listviewAdapter);
 
-        final ServerCommunicator serverCommunicator = new ServerCommunicator(MusicPlayingActivity.this);
         serverCommunicator.getSongListFromServer(listviewAdapter);
 
         setDefaultTextOnPlayer();
@@ -39,33 +37,14 @@ public class MusicPlayingActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                YoutubeFragment f = YoutubeFragment.newInstance(position);
-                f.setAdapter(listviewAdapter);
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.frameForFragment, f).commit();
+                showClickedYoutube(position);
             }
         });
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MusicPlayingActivity.this);
-                builder.setTitle("삭제");
-                builder.setMessage(songList.get(position).getTitle() + " : 해당 음악을 리스트에서 제거할거에요?");
-                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        serverCommunicator.deleteSongFromServer(position, listviewAdapter);
-                    }
-                });
-                builder.create().show();
+                showDeleteDialog(position);
 
                 return true;
             }
@@ -104,4 +83,31 @@ public class MusicPlayingActivity extends AppCompatActivity {
         transaction.add(R.id.frameForFragment, BlankYoutubeViewFragment.newInstance()).commit();
     }
 
+    private void showClickedYoutube(int position){
+        YoutubeFragment f = YoutubeFragment.newInstance(position);
+        f.setAdapter(listviewAdapter);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameForFragment, f).commit();
+    }
+
+    private void showDeleteDialog(final int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MusicPlayingActivity.this);
+        builder.setTitle("삭제");
+        ListviewItem item = songList.getSongFromList(position);
+        builder.setMessage(item.getTitle() + " : 해당 음악을 리스트에서 제거할거에요?");
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                serverCommunicator.deleteSongFromServer(position, listviewAdapter);
+            }
+        });
+        builder.create().show();
+    }
 }

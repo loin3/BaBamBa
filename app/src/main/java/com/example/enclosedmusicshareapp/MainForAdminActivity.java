@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class MainForAdminActivity extends AppCompatActivity {
 
-    long keyPressTime = 0;
+    private long keyPressTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -24,6 +24,10 @@ public class HtmlController {
         }
         String title = document.select("meta[name=title]").first().attr("content");
 
+        if(title != title){
+            return "null";
+        }
+
         return title;
     }
 }

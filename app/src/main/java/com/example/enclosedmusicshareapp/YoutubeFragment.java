@@ -1,12 +1,11 @@
 package com.example.enclosedmusicshareapp;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
-
-import static com.example.enclosedmusicshareapp.MusicPlayingActivity.songList;
 
 public class YoutubeFragment extends YouTubePlayerFragment {
 
@@ -31,7 +30,8 @@ public class YoutubeFragment extends YouTubePlayerFragment {
         initialize("AIzaSyBpNITvbs8PgrOXLXT4bw5cVvTsHtlYcqQ", new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b) {
-                currentSong = songList.get(getArguments().getInt("position"));
+                int position = getArguments().getInt("position");
+                currentSong = SongList.getInstance().getSongFromList(position);
                 currentSong.setPlaying(1);
                 youTubePlayer.loadVideo(currentSong.getUrl());
                 listviewAdapter.notifyDataSetChanged();
@@ -69,7 +69,7 @@ public class YoutubeFragment extends YouTubePlayerFragment {
 
                     @Override
                     public void onError(YouTubePlayer.ErrorReason errorReason) {
-
+                        Log.d("youtube onError", errorReason.toString());
                     }
                 });
                 youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
@@ -105,7 +105,7 @@ public class YoutubeFragment extends YouTubePlayerFragment {
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
+                Log.d("youtube failure", youTubeInitializationResult.toString());
             }
         });
     }
@@ -121,12 +121,12 @@ public class YoutubeFragment extends YouTubePlayerFragment {
         this.listviewAdapter = listviewAdapter;
     }
 
-    public ListviewItem getNextSong(int currentPosition){
-        if(currentPosition == songList.size() - 1){
-            return songList.get(0);
+    private ListviewItem getNextSong(int currentPosition){
+        if(currentPosition == SongList.getInstance().getListSize() - 1){
+            return SongList.getInstance().getSongFromList(0);
         }
         else{
-            return songList.get(currentPosition+1);
+            return SongList.getInstance().getSongFromList(currentPosition+1);
         }
     }
 }

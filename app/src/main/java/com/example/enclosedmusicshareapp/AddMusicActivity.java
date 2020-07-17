@@ -4,10 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddMusicActivity extends AppCompatActivity {
 
@@ -44,7 +44,12 @@ public class AddMusicActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                serverCommunicator.addSongToServer(normalizedLink, title);
+                if(title != null){
+                    serverCommunicator.addSongToServer(new ListviewItem(title, normalizedLink));
+                }else{
+                    Toast.makeText(getApplicationContext(), "너 주소가 이상한디", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +74,6 @@ public class AddMusicActivity extends AppCompatActivity {
     }
 
     public void setResultAndFinish(int statusCode){
-        Log.d("asdf3","tlqkf");
         Intent intent = new Intent();
         setResult(statusCode, intent);
         finish();

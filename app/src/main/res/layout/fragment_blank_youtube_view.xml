@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BlankYoutubeViewFragment">
+    tools:context=".BlankYoutubeViewFragment"
+    android:background="#000000">
 
     <TextView
         android:id="@+id/indicateTextView"
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="음악을 선택해"
         android:textSize="30dp"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
